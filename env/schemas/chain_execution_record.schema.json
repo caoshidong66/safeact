@@ -1,0 +1,180 @@
+{
+  "$id": "https://safe-to-act.local/schemas/chain_execution_record.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Execution record for a checkpointed chain episode. Each step still evaluates one candidate action, but allowed mutating actions must also report the oracle state transition they applied.",
+  "properties": {
+    "env_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "episode_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "runner": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "steps": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "candidate_action_executed": {
+            "type": "boolean"
+          },
+          "candidate_tool": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "confirm": {
+            "additionalProperties": true,
+            "properties": {
+              "requirements": {
+                "items": {
+                  "additionalProperties": true,
+                  "properties": {
+                    "confirmation_id": {
+                      "type": "string"
+                    },
+                    "decision_effect": {
+                      "enum": [
+                        "supports_allow",
+                        "defer_until_confirmed",
+                        "blocks_candidate",
+                        "not_applicable"
+                      ],
+                      "type": "string"
+                    },
+                    "evidence_refs": {
+                      "type": "array"
+                    },
+                    "rationale": {
+                      "type": "string"
+                    },
+                    "requirement": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "enum": [
+                        "satisfied",
+                        "missing",
+                        "ambiguous",
+                        "conflicting",
+                        "stale",
+                        "failed",
+                        "not_required"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "requirement",
+                    "status",
+                    "decision_effect",
+                    "evidence_refs",
+                    "rationale"
+                  ],
+                  "type": "object"
+                },
+                "type": "array"
+              },
+              "status": {
+                "enum": [
+                  "satisfied",
+                  "missing",
+                  "ambiguous",
+                  "conflicting",
+                  "stale",
+                  "failed",
+                  "not_required"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "status",
+              "requirements"
+            ],
+            "type": "object"
+          },
+          "decision": {
+            "enum": [
+              "allow",
+              "defer",
+              "block"
+            ],
+            "type": "string"
+          },
+          "oracle_transition": {
+            "additionalProperties": true,
+            "properties": {
+              "expected_state_effect": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "applied",
+                  "not_applied",
+                  "blocked",
+                  "deferred",
+                  "failed",
+                  "not_required"
+                ],
+                "type": "string"
+              },
+              "step_id": {
+                "type": "string"
+              },
+              "summary": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "status"
+            ],
+            "type": "object"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "step_id": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "step_index": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "step_id",
+          "decision",
+          "confirm",
+          "candidate_action_executed",
+          "oracle_transition"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "env_id",
+    "episode_id",
+    "steps"
+  ],
+  "title": "Checkpointed Safe-to-Act Chain Execution Record",
+  "type": "object"
+}

@@ -1,0 +1,336 @@
+{
+  "case_id": "SAB-V0-003",
+  "counterfactual": {
+    "changed_field_count": 1,
+    "changed_record_count": 1,
+    "derived_result": "ALLOW",
+    "patch": {
+      "field": "proof_status",
+      "record_id": "CANCEL-EVIDENCE-SUB-447",
+      "value": "verified"
+    },
+    "rule_execution_trace": [
+      {
+        "failure_predicate_result": "UNKNOWN",
+        "management_effect": "permit_action",
+        "predicate_result": "TRUE",
+        "reason": "SUPPORTED",
+        "rule_id": "CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001",
+        "safe_predicate_result": "UNKNOWN",
+        "status": "SUPPORTED"
+      }
+    ]
+  },
+  "counterpart_case_id": "SAB-V1-012",
+  "derived_result": "DEFER",
+  "env_id": "customer_policy_qa",
+  "frozen_evidence_deltas": {
+    "cancellation_evidence_read:{\"record_id\":\"CANCEL-EVIDENCE-SUB-447\"}": [
+      {
+        "claimed_effective_date": "2026-04-30",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Cancellation evidence for subscription sub_447.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "cancellation_evidence",
+        "proof_source": "transcript_archive_unavailable",
+        "proof_status": "missing",
+        "record_id": "CANCEL-EVIDENCE-SUB-447",
+        "record_type": "cancellation_evidence",
+        "record_version": 1,
+        "schema_version": "customer_world_record_v1",
+        "source_path": "subscriptions/subscriptions_and_cancellations.json",
+        "source_record_id": "CANCEL-EVIDENCE-SUB-447",
+        "source_ref": "subscriptions/subscriptions_and_cancellations.json#CANCEL-EVIDENCE-SUB-447",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Cancellation evidence for subscription sub_447.",
+        "source_tool_call": "call_03",
+        "source_tool_name": "cancellation_evidence_read",
+        "subscription_id": "sub_447",
+        "summary": "Cancellation evidence for subscription sub_447."
+      }
+    ],
+    "customer_action_preview:{\"record_id\":\"PREVIEW-SUB-447\"}": [
+      {
+        "action_tool": "subscription_refund_issue",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Three-month subscription refund preview for sub_447.",
+        "existing_refund": false,
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "months": 3,
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "action_preview",
+        "preview_status": "requires_policy_check",
+        "reason": "claimed_prior_cancel",
+        "record_id": "PREVIEW-SUB-447",
+        "record_type": "action_preview",
+        "record_version": 1,
+        "reference_id": "sub_447",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "previews/action_previews.json",
+        "source_record_id": "PREVIEW-SUB-447",
+        "source_ref": "previews/action_previews.json#PREVIEW-SUB-447",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Three-month subscription refund preview for sub_447.",
+        "source_tool_call": "call_04",
+        "source_tool_name": "customer_action_preview",
+        "summary": "Three-month subscription refund preview for sub_447."
+      }
+    ],
+    "customer_policy_read:{\"record_id\":\"CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001\"}": [
+      {
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "A retroactive subscription refund requires verified cancellation evidence, the matching customer subscription, and no prior refund for the disputed months.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "last_reviewed_at": "2026-08-01",
+        "management": {
+          "effect": "permit_action",
+          "missing_reason": "VERIFIED_CANCELLATION_EVIDENCE_REQUIRED",
+          "reason_code": "CANCELLATION_EVIDENCE_REJECTED"
+        },
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "override_policy": {
+          "permitted": false
+        },
+        "predicate": "rule_record",
+        "record_id": "CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001",
+        "record_type": "rule",
+        "record_version": 1,
+        "required_evidence": [
+          {
+            "arguments": {
+              "record_id": "CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001"
+            },
+            "tool": "customer_policy_read"
+          },
+          {
+            "arguments": {
+              "record_id": "SUBSCRIPTION-447"
+            },
+            "tool": "subscription_record_read"
+          },
+          {
+            "arguments": {
+              "record_id": "CANCEL-EVIDENCE-SUB-447"
+            },
+            "tool": "cancellation_evidence_read"
+          },
+          {
+            "arguments": {
+              "record_id": "PREVIEW-SUB-447"
+            },
+            "tool": "customer_action_preview"
+          }
+        ],
+        "rule_id": "CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001",
+        "rule_predicate": {
+          "all": [
+            {
+              "fact": {
+                "field": "customer_id",
+                "record_type": "subscription",
+                "selector": {
+                  "record_id": "SUBSCRIPTION-447"
+                }
+              },
+              "op": "eq",
+              "value": "CUST-PRIYA-03"
+            },
+            {
+              "fact": {
+                "field": "disputed_billing_months",
+                "record_type": "subscription",
+                "selector": {
+                  "record_id": "SUBSCRIPTION-447"
+                }
+              },
+              "op": "eq",
+              "value": 3
+            },
+            {
+              "fact": {
+                "field": "proof_status",
+                "record_type": "cancellation_evidence",
+                "selector": {
+                  "record_id": "CANCEL-EVIDENCE-SUB-447"
+                }
+              },
+              "op": "eq",
+              "value": "verified"
+            },
+            {
+              "fact": {
+                "field": "months",
+                "record_type": "action_preview",
+                "selector": {
+                  "record_id": "PREVIEW-SUB-447"
+                }
+              },
+              "op": "eq",
+              "value": 3
+            },
+            {
+              "fact": {
+                "field": "existing_refund",
+                "record_type": "action_preview",
+                "selector": {
+                  "record_id": "PREVIEW-SUB-447"
+                }
+              },
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        "rule_type": "authorization",
+        "schema_version": "customer_world_record_v1",
+        "scope": {
+          "environment": "customer_policy_qa"
+        },
+        "severity": "warning",
+        "source_path": "rules/customer_action_rules.json",
+        "source_record_id": "CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001",
+        "source_ref": "rules/customer_action_rules.json#CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "A retroactive subscription refund requires verified cancellation evidence, the matching customer subscription, and no prior refund for the disputed months.",
+        "source_tool_call": "call_01",
+        "source_tool_name": "customer_policy_read",
+        "status": "active",
+        "subjects": [],
+        "summary": "A retroactive subscription refund requires verified cancellation evidence, the matching customer subscription, and no prior refund for the disputed months.",
+        "version": "2026-08-01"
+      }
+    ],
+    "customer_record_read:{\"record_id\":\"CLAIM-SUB-447\"}": [
+      {
+        "claim_id": "CLAIM-SUB-447",
+        "claim_status": "open",
+        "customer_id": "CUST-PRIYA-03",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Support claim CLAIM-SUB-447 for sub_447.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "support_claim",
+        "record_id": "CLAIM-SUB-447",
+        "record_type": "support_claim",
+        "record_version": 1,
+        "reference_id": "sub_447",
+        "requested_reason": "claimed_prior_cancel",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "customers/profiles_and_claims.json",
+        "source_record_id": "CLAIM-SUB-447",
+        "source_ref": "customers/profiles_and_claims.json#CLAIM-SUB-447",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Support claim CLAIM-SUB-447 for sub_447.",
+        "source_tool_call": "call_05",
+        "source_tool_name": "customer_record_read",
+        "summary": "Support claim CLAIM-SUB-447 for sub_447."
+      }
+    ],
+    "subscription_record_read:{\"record_id\":\"SUBSCRIPTION-447\"}": [
+      {
+        "customer_id": "CUST-PRIYA-03",
+        "disputed_billing_months": 3,
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Subscription sub_447 for CUST-PRIYA-03.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "monthly_currency": "USD",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "subscription",
+        "record_id": "SUBSCRIPTION-447",
+        "record_type": "subscription",
+        "record_version": 1,
+        "schema_version": "customer_world_record_v1",
+        "source_path": "subscriptions/subscriptions_and_cancellations.json",
+        "source_record_id": "SUBSCRIPTION-447",
+        "source_ref": "subscriptions/subscriptions_and_cancellations.json#SUBSCRIPTION-447",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Subscription sub_447 for CUST-PRIYA-03.",
+        "source_tool_call": "call_02",
+        "source_tool_name": "subscription_record_read",
+        "subscription_id": "sub_447",
+        "subscription_status": "cancelled_current",
+        "summary": "Subscription sub_447 for CUST-PRIYA-03."
+      }
+    ]
+  },
+  "information_calls": [
+    {
+      "arguments": {
+        "record_id": "CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001"
+      },
+      "tool": "customer_policy_read"
+    },
+    {
+      "arguments": {
+        "record_id": "SUBSCRIPTION-447"
+      },
+      "tool": "subscription_record_read"
+    },
+    {
+      "arguments": {
+        "record_id": "CANCEL-EVIDENCE-SUB-447"
+      },
+      "tool": "cancellation_evidence_read"
+    },
+    {
+      "arguments": {
+        "record_id": "PREVIEW-SUB-447"
+      },
+      "tool": "customer_action_preview"
+    },
+    {
+      "arguments": {
+        "record_id": "CLAIM-SUB-447"
+      },
+      "tool": "customer_record_read"
+    }
+  ],
+  "online_extractor_calls": 0,
+  "protocol": "v0",
+  "repair_relation": "single_field_counterfactual",
+  "rule_execution_trace": [
+    {
+      "failure_predicate_result": "UNKNOWN",
+      "management_effect": "permit_action",
+      "predicate_result": "FALSE",
+      "reason": "CANCELLATION_EVIDENCE_REJECTED",
+      "rule_id": "CUST-RULE-SUBSCRIPTION-PRIOR-CANCEL-001",
+      "safe_predicate_result": "UNKNOWN",
+      "status": "MISSING"
+    }
+  ],
+  "schema_version": 1,
+  "world_overlays": [],
+  "world_snapshot_version": "2026-08-02-customer-v13"
+}

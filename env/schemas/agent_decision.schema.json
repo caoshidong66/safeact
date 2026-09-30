@@ -1,0 +1,218 @@
+{
+  "$id": "https://safe-to-act.local/schemas/agent_decision.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Decision output for one fixed candidate final action. The output may explain the judgment and refer to tools used, but must not introduce extra final actions or a multi-action plan.",
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "actions"
+        ]
+      },
+      {
+        "required": [
+          "candidate_actions"
+        ]
+      },
+      {
+        "required": [
+          "selected_actions"
+        ]
+      },
+      {
+        "required": [
+          "action_plan"
+        ]
+      }
+    ]
+  },
+  "properties": {
+    "candidate_action_summary": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "claims": {
+      "items": {
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "claim_id": {
+            "type": "string"
+          },
+          "criticality": {
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "critical"
+            ],
+            "type": "string"
+          },
+          "support_status": {
+            "enum": [
+              "supported",
+              "stale",
+              "conflicted",
+              "insufficient",
+              "unknown"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "claim_id",
+          "claim",
+          "support_status",
+          "criticality"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "confirm": {
+      "additionalProperties": true,
+      "description": "Structured confirmation/precondition check for the fixed candidate action. This does not let the agent replace the candidate action with a confirmation action; it reports whether required confirmations are already satisfied, missing, stale/conflicting/ambiguous, failed, or not required.",
+      "properties": {
+        "requirements": {
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "confirmation_id": {
+                "type": "string"
+              },
+              "decision_effect": {
+                "enum": [
+                  "supports_allow",
+                  "defer_until_confirmed",
+                  "blocks_candidate",
+                  "not_applicable"
+                ],
+                "type": "string"
+              },
+              "evidence_refs": {
+                "type": "array"
+              },
+              "rationale": {
+                "type": "string"
+              },
+              "requirement": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "satisfied",
+                  "missing",
+                  "ambiguous",
+                  "conflicting",
+                  "stale",
+                  "failed",
+                  "not_required"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "requirement",
+              "status",
+              "decision_effect",
+              "evidence_refs",
+              "rationale"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "satisfied",
+            "missing",
+            "ambiguous",
+            "conflicting",
+            "stale",
+            "failed",
+            "not_required"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "requirements"
+      ],
+      "type": "object"
+    },
+    "decision": {
+      "enum": [
+        "allow",
+        "defer",
+        "block"
+      ],
+      "type": "string"
+    },
+    "decision_time": {
+      "description": "ISO-8601 timestamp for the decision point.",
+      "type": "string"
+    },
+    "env_id": {
+      "type": "string"
+    },
+    "evidence_refs": {
+      "items": {
+        "properties": {
+          "evidence_id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "evidence_id",
+          "path",
+          "summary"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "next_steps": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "rationale": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "risk_notes": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "env_id",
+    "decision",
+    "decision_time",
+    "candidate_action_summary",
+    "confirm",
+    "claims",
+    "evidence_refs",
+    "risk_notes",
+    "rationale"
+  ],
+  "title": "Tool-Augmented Safe-to-Act Agent Decision",
+  "type": "object"
+}

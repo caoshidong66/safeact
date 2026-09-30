@@ -1,0 +1,104 @@
+{
+  "$id": "https://safe-to-act.local/schemas/open_chain_execution_record.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Execution record for an open action-chain episode. The agent chooses a tool/action trace; evaluation maps actions to canonical oracle effects.",
+  "properties": {
+    "actions": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "action_id": {
+            "type": "string"
+          },
+          "action_type": {
+            "enum": [
+              "read",
+              "write",
+              "final",
+              "noop"
+            ],
+            "type": "string"
+          },
+          "args": {
+            "type": "object"
+          },
+          "confirm": {
+            "additionalProperties": true,
+            "properties": {
+              "requirements": {
+                "type": "array"
+              },
+              "status": {
+                "enum": [
+                  "satisfied",
+                  "missing",
+                  "ambiguous",
+                  "conflicting",
+                  "stale",
+                  "failed",
+                  "not_required"
+                ],
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "tool": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "tool",
+          "args",
+          "action_type"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "env_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "episode_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "final_status": {
+      "enum": [
+        "completed",
+        "deferred",
+        "blocked",
+        "partial"
+      ],
+      "type": "string"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "runner": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "env_id",
+    "episode_id",
+    "final_status",
+    "actions"
+  ],
+  "title": "Open Safe-to-Act Chain Execution Record",
+  "type": "object"
+}

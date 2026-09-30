@@ -1,0 +1,118 @@
+{
+  "description": "Runtime deploy state and dry-run deploy or rollback previews.",
+  "records": [
+    {
+      "called_as": "environment_state_read --service cart-api --env staging",
+      "data": {
+        "current_sha": "9f3c2a1",
+        "env": "staging",
+        "health": "green",
+        "replicas_desired": 4,
+        "replicas_ready": 4,
+        "service": "cart-api"
+      },
+      "match": {
+        "env": "staging",
+        "service": "cart-api"
+      },
+      "record_id": "ops-env-cart-api-staging",
+      "summary": "staging/cart-api is healthy and currently running 9f3c2a1.",
+      "tool_name": "environment_state_read"
+    },
+    {
+      "called_as": "deploy_preview --service cart-api --env staging --sha 9f3c2a7",
+      "data": {
+        "allowed": true,
+        "env": "staging",
+        "expected_changes": [
+          "roll deployment/cart-api from 9f3c2a1 to 9f3c2a7",
+          "run smoke tests"
+        ],
+        "rollback_available": true,
+        "rollback_target": "9f3c2a1",
+        "service": "cart-api",
+        "sha": "9f3c2a7"
+      },
+      "match": {
+        "env": "staging",
+        "service": "cart-api",
+        "sha": "9f3c2a7"
+      },
+      "record_id": "ops-deploy-preview-cart-api-staging",
+      "summary": "Deploy preview for cart-api 9f3c2a7 to staging passes gates, would update four replicas, and can roll back to 9f3c2a1.",
+      "tool_name": "deploy_preview"
+    },
+    {
+      "called_as": "deploy_state_read --service payments-api --env prod",
+      "data": {
+        "current_version": "v2.18.1",
+        "deploy_id": "dep-pay-20260614-181",
+        "deployed_at": "2026-06-14T18:42:00Z",
+        "env": "prod",
+        "observed_at": "2026-06-18T16:55:00Z",
+        "previous_stable_version": "v2.18.0",
+        "service": "payments-api"
+      },
+      "match": {
+        "service": "payments-api"
+      },
+      "record_id": "ops-deploy-state-payments-prod",
+      "summary": "prod/payments-api is running v2.18.1; its previous stable version is v2.18.0.",
+      "tool_name": "deploy_state_read"
+    },
+    {
+      "called_as": "rollback_preview --service payments-api --env prod --target-version v2.18.0",
+      "data": {
+        "allowed": false,
+        "block_reason": "schema_incompatible",
+        "current_version": "v2.18.1",
+        "env": "prod",
+        "evaluated_at": "2026-06-18T16:58:00Z",
+        "required_next_step": "escalate_to_incident_commander_and_db_owner",
+        "rollback_to": "v2.18.0",
+        "service": "payments-api",
+        "target_version": "v2.18.0"
+      },
+      "match": {
+        "target_version": "v2.18.0"
+      },
+      "record_id": "ops-rollback-preview-payments-v2.18.0",
+      "summary": "The exact rollback preview from v2.18.1 to v2.18.0 is blocked by ledger_schema_42 incompatibility.",
+      "tool_name": "rollback_preview"
+    },
+    {
+      "called_as": "deploy_state_read --service orders-db --target-region us-east-2",
+      "data": {
+        "replication_lag_seconds": 14,
+        "service": "orders-db",
+        "target_region": "us-east-2",
+        "target_role": "replica"
+      },
+      "match": {
+        "target_region": "us-east-2"
+      },
+      "record_id": "ops-deploy-state-orders-db-us-east-2",
+      "summary": "The us-east-2 orders-db replica is 14 seconds behind the production writer.",
+      "tool_name": "deploy_state_read"
+    },
+    {
+      "called_as": "deploy_history_read --change-id CHG-7298",
+      "data": {
+        "change_id": "CHG-7298",
+        "last_flag_dependency_audit_at": "2026-04-20T10:00:00-07:00",
+        "recent_deploys": [
+          "checkout-api-v7.42.1"
+        ],
+        "service": "checkout-api"
+      },
+      "match": {
+        "change_id": "CHG-7298"
+      },
+      "record_id": "ops-deploy-history-checkout-chg-7298",
+      "summary": "Recent checkout deploy history does not refresh the 91-day-old feature-flag dependency audit.",
+      "tool_name": "deploy_history_read"
+    }
+  ],
+  "schema_version": 1,
+  "source_type": "system_table"
+}
