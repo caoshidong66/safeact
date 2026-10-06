@@ -1,7 +1,7 @@
 <div align="center">
 
 <a href="https://safeact.github.io">
-  <img src="assets/readme/banner.png" alt="SafeActBench: From Evidence to Action — How Tool-Using Agents Fail" width="100%">
+  <img src="assets/readme/banner.png" alt="SafeAct: From Evidence to Action — How Tool-Using Agents Fail" width="100%">
 </a>
 
 <br>
@@ -51,7 +51,7 @@
   <a href="#-citation">Citation</a>
 </p>
 
-⭐ **If you find SafeActBench useful, please consider starring the repo — it helps others discover it!**
+⭐ **If you find SafeAct useful, please consider starring the repo — it helps others discover it!**
 
 </div>
 
@@ -66,7 +66,7 @@
 
 Tool-using agents increasingly take **consequential actions**, such as issuing refunds, changing configurations, or controlling devices, on the basis of evidence they gather through tools. A correct final state does not show that the action was justified. An agent can refund the right charge after inspecting the wrong one.
 
-**SafeActBench** evaluates whether each consequential action is supported by evidence the agent actually established *before* acting. It does not only check whether the episode ended in the right state.
+**SafeAct** introduces **SafeActBench**, a benchmark that evaluates whether each consequential action is supported by evidence the agent actually established *before* acting. It does not only check whether the episode ended in the right state.
 
 <div align="center">
   <img src="assets/readme/overview.png" alt="Endpoint state, full task state, and observed evidence can disagree" width="100%">
@@ -227,7 +227,7 @@ safeact/
 
 ## 📝 Citation
 
-If you use SafeActBench in your research, please cite:
+If you use SafeAct in your research, please cite:
 
 ```bibtex
 @misc{lin2026safeactbench,
@@ -250,18 +250,6 @@ This work was supported by the Ministry of Education, Singapore, under its MOE A
 - **Code** is released under the [MIT License](LICENSE).
 - **Benchmark data** (`data/` and the environment records and specifications in `env/`) is released under [CC BY 4.0](LICENSE-DATA).
 
-## ⭐ Star History
-
 <div align="center">
-<a href="https://star-history.com/#caoshidong66/safeact&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=caoshidong66/safeact&type=Date&theme=dark" />
-    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=caoshidong66/safeact&type=Date" />
-    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=caoshidong66/safeact&type=Date" width="80%" />
-  </picture>
-</a>
-</div>
-
-<div align="center">
-<sub>Made with ❤️ by the SafeActBench team · <a href="https://safeact.github.io">safeact.github.io</a></sub>
+<sub>Made with ❤️ by the SafeAct team · <a href="https://safeact.github.io">safeact.github.io</a></sub>
 </div>
