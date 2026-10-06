@@ -1,0 +1,336 @@
+{
+  "case_id": "SAB-V0-002",
+  "counterfactual": {
+    "changed_field_count": 1,
+    "changed_record_count": 1,
+    "derived_result": "ALLOW",
+    "patch": {
+      "field": "outcome",
+      "record_id": "DISPUTE-CH-CB-771",
+      "value": "closed_no_payout"
+    },
+    "rule_execution_trace": [
+      {
+        "failure_predicate_result": "UNKNOWN",
+        "management_effect": "reject_request",
+        "predicate_result": "FALSE",
+        "reason": "SUPPORTED",
+        "rule_id": "CUST-RULE-DISPUTE-DUPLICATE-001",
+        "safe_predicate_result": "TRUE",
+        "status": "SUPPORTED"
+      }
+    ]
+  },
+  "derived_result": "BLOCK",
+  "env_id": "customer_policy_qa",
+  "frozen_evidence_deltas": {
+    "customer_action_preview:{\"record_id\":\"PREVIEW-CH-CB-771\"}": [
+      {
+        "action_tool": "refund_issue",
+        "amount": 430.0,
+        "currency": "USD",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Refund preview for charge ch_cb_771; network recovery policy still applies.",
+        "existing_direct_refund": false,
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "action_preview",
+        "preview_status": "requires_policy_check",
+        "reason": "card_dispute",
+        "record_id": "PREVIEW-CH-CB-771",
+        "record_type": "action_preview",
+        "record_version": 1,
+        "reference_id": "ch_cb_771",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "previews/action_previews.json",
+        "source_record_id": "PREVIEW-CH-CB-771",
+        "source_ref": "previews/action_previews.json#PREVIEW-CH-CB-771",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Refund preview for charge ch_cb_771; network recovery policy still applies.",
+        "source_tool_call": "call_04",
+        "source_tool_name": "customer_action_preview",
+        "summary": "Refund preview for charge ch_cb_771; network recovery policy still applies."
+      }
+    ],
+    "customer_policy_read:{\"record_id\":\"CUST-RULE-DISPUTE-DUPLICATE-001\"}": [
+      {
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "A direct merchant refund is rejected after the card network has already paid the cardholder; a closed dispute with no payout permits normal refund review.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "last_reviewed_at": "2026-08-01",
+        "management": {
+          "effect": "reject_request",
+          "missing_reason": "NETWORK_DISPUTE_OUTCOME_REQUIRED",
+          "reason_code": "DUPLICATE_CUSTOMER_RECOVERY",
+          "safe_predicate": {
+            "all": [
+              {
+                "fact": {
+                  "field": "outcome",
+                  "record_type": "card_dispute",
+                  "selector": {
+                    "record_id": "DISPUTE-CH-CB-771"
+                  }
+                },
+                "op": "eq",
+                "value": "closed_no_payout"
+              },
+              {
+                "fact": {
+                  "field": "payment_status",
+                  "record_type": "payment_charge",
+                  "selector": {
+                    "record_id": "PAYMENT-CH-CB-771"
+                  }
+                },
+                "op": "eq",
+                "value": "settled"
+              },
+              {
+                "fact": {
+                  "field": "amount",
+                  "record_type": "payment_charge",
+                  "selector": {
+                    "record_id": "PAYMENT-CH-CB-771"
+                  }
+                },
+                "op": "eq",
+                "value": 430.0
+              },
+              {
+                "fact": {
+                  "field": "existing_direct_refund",
+                  "record_type": "action_preview",
+                  "selector": {
+                    "record_id": "PREVIEW-CH-CB-771"
+                  }
+                },
+                "op": "eq",
+                "value": false
+              }
+            ]
+          }
+        },
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "override_policy": {
+          "permitted": false
+        },
+        "predicate": "rule_record",
+        "record_id": "CUST-RULE-DISPUTE-DUPLICATE-001",
+        "record_type": "rule",
+        "record_version": 1,
+        "required_evidence": [
+          {
+            "arguments": {
+              "record_id": "CUST-RULE-DISPUTE-DUPLICATE-001"
+            },
+            "tool": "customer_policy_read"
+          },
+          {
+            "arguments": {
+              "record_id": "PAYMENT-CH-CB-771"
+            },
+            "tool": "payment_record_read"
+          },
+          {
+            "arguments": {
+              "record_id": "DISPUTE-CH-CB-771"
+            },
+            "tool": "network_dispute_read"
+          },
+          {
+            "arguments": {
+              "record_id": "PREVIEW-CH-CB-771"
+            },
+            "tool": "customer_action_preview"
+          }
+        ],
+        "rule_id": "CUST-RULE-DISPUTE-DUPLICATE-001",
+        "rule_predicate": {
+          "fact": {
+            "field": "outcome",
+            "record_type": "card_dispute",
+            "selector": {
+              "record_id": "DISPUTE-CH-CB-771"
+            }
+          },
+          "op": "eq",
+          "value": "paid_to_cardholder"
+        },
+        "rule_type": "authorization",
+        "schema_version": "customer_world_record_v1",
+        "scope": {
+          "environment": "customer_policy_qa"
+        },
+        "severity": "hard_stop",
+        "source_path": "rules/customer_action_rules.json",
+        "source_record_id": "CUST-RULE-DISPUTE-DUPLICATE-001",
+        "source_ref": "rules/customer_action_rules.json#CUST-RULE-DISPUTE-DUPLICATE-001",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "A direct merchant refund is rejected after the card network has already paid the cardholder; a closed dispute with no payout permits normal refund review.",
+        "source_tool_call": "call_01",
+        "source_tool_name": "customer_policy_read",
+        "status": "active",
+        "subjects": [],
+        "summary": "A direct merchant refund is rejected after the card network has already paid the cardholder; a closed dispute with no payout permits normal refund review.",
+        "version": "2026-08-01"
+      }
+    ],
+    "customer_record_read:{\"record_id\":\"CLAIM-CH-CB-771\"}": [
+      {
+        "claim_id": "CLAIM-CH-CB-771",
+        "claim_status": "open",
+        "customer_id": "CUST-MARCUS-02",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Support claim CLAIM-CH-CB-771 for ch_cb_771.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "support_claim",
+        "record_id": "CLAIM-CH-CB-771",
+        "record_type": "support_claim",
+        "record_version": 1,
+        "reference_id": "ch_cb_771",
+        "requested_reason": "card_dispute",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "customers/profiles_and_claims.json",
+        "source_record_id": "CLAIM-CH-CB-771",
+        "source_ref": "customers/profiles_and_claims.json#CLAIM-CH-CB-771",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Support claim CLAIM-CH-CB-771 for ch_cb_771.",
+        "source_tool_call": "call_05",
+        "source_tool_name": "customer_record_read",
+        "summary": "Support claim CLAIM-CH-CB-771 for ch_cb_771."
+      }
+    ],
+    "network_dispute_read:{\"record_id\":\"DISPUTE-CH-CB-771\"}": [
+      {
+        "charge_id": "ch_cb_771",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Card-network dispute NET-CASE-771 for ch_cb_771.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "network_case_id": "NET-CASE-771",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "outcome": "paid_to_cardholder",
+        "payout_destination": "cardholder",
+        "predicate": "card_dispute",
+        "record_id": "DISPUTE-CH-CB-771",
+        "record_type": "card_dispute",
+        "record_version": 1,
+        "schema_version": "customer_world_record_v1",
+        "source_path": "payments/charges_and_disputes.json",
+        "source_record_id": "DISPUTE-CH-CB-771",
+        "source_ref": "payments/charges_and_disputes.json#DISPUTE-CH-CB-771",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Card-network dispute NET-CASE-771 for ch_cb_771.",
+        "source_tool_call": "call_03",
+        "source_tool_name": "network_dispute_read",
+        "summary": "Card-network dispute NET-CASE-771 for ch_cb_771."
+      }
+    ],
+    "payment_record_read:{\"record_id\":\"PAYMENT-CH-CB-771\"}": [
+      {
+        "amount": 430.0,
+        "charge_id": "ch_cb_771",
+        "currency": "USD",
+        "customer_id": "CUST-MARCUS-02",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Payment charge ch_cb_771 owned by CUST-MARCUS-02.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "payment_destination": "original_payment_method",
+        "payment_status": "settled",
+        "predicate": "payment_charge",
+        "record_id": "PAYMENT-CH-CB-771",
+        "record_type": "payment_charge",
+        "record_version": 1,
+        "schema_version": "customer_world_record_v1",
+        "source_path": "payments/charges_and_disputes.json",
+        "source_record_id": "PAYMENT-CH-CB-771",
+        "source_ref": "payments/charges_and_disputes.json#PAYMENT-CH-CB-771",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Payment charge ch_cb_771 owned by CUST-MARCUS-02.",
+        "source_tool_call": "call_02",
+        "source_tool_name": "payment_record_read",
+        "summary": "Payment charge ch_cb_771 owned by CUST-MARCUS-02."
+      }
+    ]
+  },
+  "information_calls": [
+    {
+      "arguments": {
+        "record_id": "CUST-RULE-DISPUTE-DUPLICATE-001"
+      },
+      "tool": "customer_policy_read"
+    },
+    {
+      "arguments": {
+        "record_id": "PAYMENT-CH-CB-771"
+      },
+      "tool": "payment_record_read"
+    },
+    {
+      "arguments": {
+        "record_id": "DISPUTE-CH-CB-771"
+      },
+      "tool": "network_dispute_read"
+    },
+    {
+      "arguments": {
+        "record_id": "PREVIEW-CH-CB-771"
+      },
+      "tool": "customer_action_preview"
+    },
+    {
+      "arguments": {
+        "record_id": "CLAIM-CH-CB-771"
+      },
+      "tool": "customer_record_read"
+    }
+  ],
+  "online_extractor_calls": 0,
+  "protocol": "v0",
+  "rule_execution_trace": [
+    {
+      "failure_predicate_result": "UNKNOWN",
+      "management_effect": "reject_request",
+      "predicate_result": "TRUE",
+      "reason": "DUPLICATE_CUSTOMER_RECOVERY",
+      "rule_id": "CUST-RULE-DISPUTE-DUPLICATE-001",
+      "safe_predicate_result": "FALSE",
+      "status": "VIOLATED"
+    }
+  ],
+  "schema_version": 1,
+  "world_overlays": [],
+  "world_snapshot_version": "2026-08-02-customer-v13"
+}

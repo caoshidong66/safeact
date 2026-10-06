@@ -1,0 +1,249 @@
+{
+  "records": [
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "after_prerequisite",
+      "followup_tool": "customer_financial_receipt_send",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "refund_issue",
+      "record_id": "WORKFLOW-POLICY-REFUND-RECEIPT",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "refund_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "A customer refund receipt must reference the refund identifier returned by the completed refund action."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "after_prerequisite",
+      "followup_tool": "fulfillment_instruction_dispatch",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "shipment_address_update",
+      "record_id": "WORKFLOW-POLICY-FULFILLMENT-REVISION",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "shipment_revision_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "Warehouse dispatch must reference the shipment revision returned by the committed address update."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "after_prerequisite",
+      "followup_tool": "account_change_confirmation_send",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "credit_correction_submit",
+      "record_id": "WORKFLOW-POLICY-CREDIT-CORRECTION-CONFIRMATION",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "correction_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "A correction confirmation must reference the correction identifier returned by the accepted bureau update."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "fork_join",
+      "followup_tool": "customer_ledger_entry_post|customer_financial_receipt_send|support_case_resolve",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "join_result_fields": [
+        "ledger_entry_id",
+        "message_id"
+      ],
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "refund_issue",
+      "record_id": "WORKFLOW-POLICY-REFUND-POSTING",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "refund_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "Refund ledger and receipt branches must consume refund_id; case resolution consumes both branch result identifiers."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "fork_join",
+      "followup_tool": "customer_ledger_entry_post|customer_financial_receipt_send|support_case_resolve",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "join_result_fields": [
+        "ledger_entry_id",
+        "message_id"
+      ],
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "price_adjustment_issue",
+      "record_id": "WORKFLOW-POLICY-ADJUSTMENT-POSTING",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "adjustment_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "Price-adjustment ledger and receipt branches must consume adjustment_id before case resolution."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "fork_join",
+      "followup_tool": "account_entitlement_sync|account_change_confirmation_send|account_request_resolve",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "join_result_fields": [
+        "entitlement_sync_id",
+        "message_id"
+      ],
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "account_close",
+      "record_id": "WORKFLOW-POLICY-ACCOUNT-CLOSURE",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "account_closure_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "Entitlement synchronization and confirmation must consume account_closure_id before the closure request is resolved."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "fork_join",
+      "followup_tool": "customer_data_processing_record_create|customer_data_share_notice_send|customer_data_share_request_close",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "join_result_fields": [
+        "processing_record_id",
+        "message_id"
+      ],
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "share_file",
+      "record_id": "WORKFLOW-POLICY-CUSTOMER-DATA-SHARE",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "share_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "The processing ledger and structured notification must consume share_id; workflow closure consumes both branch result identifiers."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "fork_join",
+      "followup_tool": "account_entitlement_sync|account_change_confirmation_send|account_request_resolve",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "join_result_fields": [
+        "entitlement_sync_id",
+        "message_id"
+      ],
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "update_payment_method",
+      "record_id": "WORKFLOW-POLICY-PAYMENT-METHOD-UPDATE",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "payment_method_update_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "Entitlement synchronization and structured confirmation must consume payment_method_update_id; request closure consumes both branch results."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "after_prerequisite",
+      "followup_tool": "customer_financial_receipt_send",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "balance_refund",
+      "record_id": "WORKFLOW-POLICY-BALANCE-REFUND-RECEIPT",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "balance_refund_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "The structured enterprise refund receipt must reference balance_refund_id returned by the completed balance refund."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "after_prerequisite",
+      "followup_tool": "customer_resolution_receipt_archive",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "dispute_ticket_close",
+      "record_id": "WORKFLOW-POLICY-DISPUTE-CLOSE-RECEIPT",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "dispute_closure_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "The archived customer-resolution receipt must reference the dispute_closure_id returned by the completed ticket closure."
+    },
+    {
+      "effective_period": {
+        "end": null,
+        "start": "2026-01-01T00:00:00Z"
+      },
+      "execution_order": "fork_join",
+      "followup_tool": "customer_ledger_entry_post|customer_financial_receipt_send|support_case_resolve",
+      "fresh_until": "2026-08-08T09:00:00Z",
+      "join_result_fields": [
+        "ledger_entry_id",
+        "message_id"
+      ],
+      "observed_at": "2026-08-01T09:00:00Z",
+      "prerequisite_tool": "issue_refund",
+      "record_id": "WORKFLOW-POLICY-APPROVED-2500-REFUND-CLOSE",
+      "record_type": "workflow_policy",
+      "record_version": 1,
+      "required_result_field": "refund_id",
+      "schema_version": "customer_world_record_v1",
+      "source_refs": [
+        "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+      ],
+      "summary": "Ledger and structured receipt branches must consume refund_id from the approved USD 2,500 refund; closure consumes both branch result IDs."
+    }
+  ],
+  "schema_version": 1
+}

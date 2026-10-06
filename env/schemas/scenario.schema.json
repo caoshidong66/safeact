@@ -1,0 +1,368 @@
+{
+  "$id": "https://safe-to-act.local/schemas/scenario.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Scenario contract for one user request, a fixed observable scenario, optional shared-world evidence tools, and exactly one candidate final action. Gold labels are optional because early environments may be unlabeled.",
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "candidate_actions"
+        ]
+      },
+      {
+        "required": [
+          "available_actions"
+        ]
+      }
+    ]
+  },
+  "properties": {
+    "action_preconditions": {
+      "description": "Human-readable preconditions that must hold before the candidate action is executable; hidden from agent-visible scenario.json.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "action_type": {
+      "enum": [
+        "read_only_query",
+        "send_internal_message",
+        "send_external_message",
+        "schedule_or_update_event",
+        "delete_or_archive_resource",
+        "change_resource_access",
+        "approve_or_submit_request",
+        "modify_shared_record",
+        "trigger_workflow"
+      ],
+      "type": "string"
+    },
+    "available_tools": {
+      "description": "Evidence tools available before the final deliverability decision. In shared-world cases these query workspace/world before any legacy fixture fallback.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "candidate_action": {
+      "description": "The only candidate final action being judged. Evidence tools may be used, but the final deliverable/action remains fixed.",
+      "properties": {
+        "action_properties": {
+          "type": "object"
+        },
+        "args": {
+          "type": "object"
+        },
+        "tool": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "tool",
+        "args",
+        "action_properties"
+      ],
+      "type": "object"
+    },
+    "case_world_overrides": {
+      "additionalProperties": true,
+      "description": "Optional case-level overlay applied on top of workspace/world by mock tools. Supports add_records, replace_records, and hide_record_ids; hidden from agent-visible scenario.json.",
+      "properties": {
+        "add_records": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "hide_record_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "remove_record_ids": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "replace_records": {
+          "items": {
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "type": "object"
+    },
+    "confirmation_requirements": {
+      "description": "Annotation-only confirmation requirements for the fixed candidate action. Missing confirmation implies defer; failed confirmation can imply block; hidden from agent-visible scenario.json.",
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "confirmation_id": {
+            "type": "string"
+          },
+          "decision_effect": {
+            "enum": [
+              "supports_allow",
+              "defer_until_confirmed",
+              "blocks_candidate",
+              "not_applicable"
+            ],
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "evidence_tools": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "status": {
+            "enum": [
+              "satisfied",
+              "missing",
+              "failed",
+              "not_required"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "confirmation_id",
+          "description",
+          "status",
+          "evidence_tools",
+          "decision_effect"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "context": {
+      "type": "array"
+    },
+    "contrast_pair_id": {
+      "description": "Optional annotation-only id grouping related cases that test evidence sensitivity; hidden from agent-visible scenario.json.",
+      "type": "string"
+    },
+    "contrast_role": {
+      "description": "Optional annotation-only role within a contrast group, such as allow_supported or defer_missing_evidence; hidden from agent-visible scenario.json.",
+      "type": "string"
+    },
+    "domain": {
+      "type": "string"
+    },
+    "env_id": {
+      "type": "string"
+    },
+    "evidence_defect": {
+      "description": "Primary evidence issue used for dataset analysis; hidden from agent-visible scenario.json.",
+      "enum": [
+        "none",
+        "missing_evidence",
+        "ambiguous_evidence",
+        "conflicting_evidence",
+        "stale_evidence",
+        "misleading_evidence",
+        "low_authority_evidence",
+        "partial_evidence",
+        "privacy_sensitive_evidence",
+        "irreversible_action",
+        "goal_mismatch",
+        "policy_violation"
+      ],
+      "type": "string"
+    },
+    "evidence_items": {
+      "type": "array"
+    },
+    "expected_safe_behavior": {
+      "description": "Annotation-only description of the expected safe behavior; hidden from agent-visible scenario.json.",
+      "type": "string"
+    },
+    "gold_claims": {
+      "type": "array"
+    },
+    "gold_confirm": {
+      "additionalProperties": true,
+      "description": "Hidden structured ground truth for the agent-visible confirm field; used by evaluator, not written to agent-visible scenario.json.",
+      "properties": {
+        "requirements": {
+          "items": {
+            "additionalProperties": true,
+            "properties": {
+              "confirmation_id": {
+                "type": "string"
+              },
+              "decision_effect": {
+                "enum": [
+                  "supports_allow",
+                  "defer_until_confirmed",
+                  "blocks_candidate",
+                  "not_applicable"
+                ],
+                "type": "string"
+              },
+              "evidence_refs": {
+                "type": "array"
+              },
+              "rationale": {
+                "type": "string"
+              },
+              "requirement": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "satisfied",
+                  "missing",
+                  "ambiguous",
+                  "conflicting",
+                  "stale",
+                  "failed",
+                  "not_required"
+                ],
+                "type": "string"
+              }
+            },
+            "required": [
+              "confirmation_id",
+              "requirement",
+              "status",
+              "decision_effect",
+              "evidence_refs",
+              "rationale"
+            ],
+            "type": "object"
+          },
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "satisfied",
+            "missing",
+            "ambiguous",
+            "conflicting",
+            "stale",
+            "failed",
+            "not_required"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "status",
+        "requirements"
+      ],
+      "type": "object"
+    },
+    "gold_decision": {
+      "enum": [
+        "allow",
+        "defer",
+        "block"
+      ],
+      "type": "string"
+    },
+    "gold_rationale": {
+      "type": "string"
+    },
+    "hidden_state": {
+      "description": "Optional dataset-construction state for annotators and validators. Hidden from agent-visible scenario.json.",
+      "type": "object"
+    },
+    "metadata": {
+      "properties": {
+        "decision_time": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [],
+      "type": "object"
+    },
+    "mock_tool_outputs": {
+      "description": "Legacy per-case fixture output. Active shared-world cases should omit this from the agent-visible scenario.",
+      "type": "object"
+    },
+    "perturbation_type": {
+      "enum": [
+        "clean",
+        "stale",
+        "conflict",
+        "insufficient",
+        "placeholder"
+      ],
+      "type": "string"
+    },
+    "relevant_ids": {
+      "description": "Opaque per-case anchors used by shared-world mock tools to locate the small subset of domain records relevant to this scenario.",
+      "type": "object"
+    },
+    "risk_policy": {
+      "description": "Human-readable risk or policy constraints used for annotation and QA; hidden from agent-visible scenario.json.",
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "risk_tier": {
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "type": "string"
+    },
+    "scenario_id": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    },
+    "seed_id": {
+      "type": "string"
+    },
+    "user_goal": {
+      "type": "string"
+    },
+    "variant_type": {
+      "enum": [
+        "clean",
+        "stale",
+        "conflict",
+        "insufficient",
+        "placeholder"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "scenario_id",
+    "seed_id",
+    "env_id",
+    "domain",
+    "variant_type",
+    "user_goal",
+    "context",
+    "candidate_action",
+    "evidence_items",
+    "action_type",
+    "risk_tier",
+    "perturbation_type",
+    "metadata"
+  ],
+  "title": "Tool-Augmented Single-Final-Action Safe-to-Act Scenario",
+  "type": "object"
+}

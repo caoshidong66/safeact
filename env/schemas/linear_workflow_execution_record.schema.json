@@ -1,0 +1,74 @@
+{
+  "$id": "https://safe-to-act.local/schemas/linear_workflow_execution_record.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "description": "Execution record for a linear evidence-gated workflow. The agent records multiple INFO_CALL events followed by at least two ordered CONSEQUENTIAL_CALL commit attempts. The evaluator produces ALLOW, DEFER, or BLOCK for each commit.",
+  "properties": {
+    "env_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "episode_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "events": {
+      "items": {
+        "additionalProperties": true,
+        "properties": {
+          "arguments": {
+            "type": "object"
+          },
+          "call_id": {
+            "type": "string"
+          },
+          "commit_id": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "tool": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "INFO_CALL",
+              "CONSEQUENTIAL_CALL"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "type",
+          "tool",
+          "arguments"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "runner": {
+      "type": "string"
+    },
+    "schema_version": {
+      "const": 1,
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "env_id",
+    "episode_id",
+    "events"
+  ],
+  "title": "SafeActBench v2 Linear Workflow Execution Record",
+  "type": "object"
+}

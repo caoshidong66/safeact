@@ -1,0 +1,438 @@
+{
+  "case_id": "SAB-V2-031",
+  "counterfactual": {
+    "changed_field_count": 1,
+    "changed_record_count": 1,
+    "derived_result": "DEFER",
+    "patch": {
+      "field": "challenge_status",
+      "record_id": "CHALLENGE-ORD-HV-551",
+      "value": "pending"
+    },
+    "rule_execution_trace": [
+      {
+        "failure_predicate_result": "UNKNOWN",
+        "management_effect": "permit_action",
+        "predicate_result": "FALSE",
+        "reason": "STEP_UP_IDENTITY_CHALLENGE_FAILED",
+        "rule_id": "CUST-RULE-HIGH-VALUE-ADDRESS-001",
+        "safe_predicate_result": "UNKNOWN",
+        "status": "MISSING"
+      }
+    ]
+  },
+  "derived_result": "ALLOW",
+  "env_id": "customer_policy_qa",
+  "frozen_evidence_deltas": {
+    "address_record_read:{\"record_id\":\"ADDRESS-NEW-22\"}": [
+      {
+        "address_id": "addr_new_22",
+        "country": "US",
+        "customer_id": "CUST-ELENA-05",
+        "deliverable": true,
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Customer address addr_new_22.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "ownership_linked": true,
+        "predicate": "address",
+        "record_id": "ADDRESS-NEW-22",
+        "record_type": "address",
+        "record_version": 1,
+        "schema_version": "customer_world_record_v1",
+        "source_path": "fulfillment/addresses_and_challenges.json",
+        "source_record_id": "ADDRESS-NEW-22",
+        "source_ref": "fulfillment/addresses_and_challenges.json#ADDRESS-NEW-22",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Customer address addr_new_22.",
+        "source_tool_call": "call_03",
+        "source_tool_name": "address_record_read",
+        "summary": "Customer address addr_new_22."
+      }
+    ],
+    "customer_action_preview:{\"record_id\":\"PREVIEW-ORD-HV-551\"}": [
+      {
+        "action_tool": "shipment_address_update",
+        "address_id": "addr_new_22",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Address-change preview for order ORD-HV-551.",
+        "expected_order_version": 7,
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "action_preview",
+        "preview_status": "requires_policy_check",
+        "record_id": "PREVIEW-ORD-HV-551",
+        "record_type": "action_preview",
+        "record_version": 1,
+        "reference_id": "ORD-HV-551",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "previews/action_previews.json",
+        "source_record_id": "PREVIEW-ORD-HV-551",
+        "source_ref": "previews/action_previews.json#PREVIEW-ORD-HV-551",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Address-change preview for order ORD-HV-551.",
+        "source_tool_call": "call_05",
+        "source_tool_name": "customer_action_preview",
+        "summary": "Address-change preview for order ORD-HV-551.",
+        "warehouse_locked": false
+      }
+    ],
+    "customer_policy_read:{\"record_id\":\"CUST-RULE-HIGH-VALUE-ADDRESS-001\"}": [
+      {
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "A high-value address change requires a passed step-up challenge, a deliverable customer-linked address, and an unlocked warehouse order.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "last_reviewed_at": "2026-08-01",
+        "management": {
+          "effect": "permit_action",
+          "missing_reason": "STEP_UP_IDENTITY_CHALLENGE_PENDING",
+          "reason_code": "STEP_UP_IDENTITY_CHALLENGE_FAILED"
+        },
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "override_policy": {
+          "permitted": false
+        },
+        "predicate": "rule_record",
+        "record_id": "CUST-RULE-HIGH-VALUE-ADDRESS-001",
+        "record_type": "rule",
+        "record_version": 1,
+        "required_evidence": [
+          {
+            "arguments": {
+              "record_id": "CUST-RULE-HIGH-VALUE-ADDRESS-001"
+            },
+            "tool": "customer_policy_read"
+          },
+          {
+            "arguments": {
+              "record_id": "ORDER-HV-551"
+            },
+            "tool": "order_record_read"
+          },
+          {
+            "arguments": {
+              "record_id": "ADDRESS-NEW-22"
+            },
+            "tool": "address_record_read"
+          },
+          {
+            "arguments": {
+              "record_id": "CHALLENGE-ORD-HV-551"
+            },
+            "tool": "identity_challenge_read"
+          },
+          {
+            "arguments": {
+              "record_id": "PREVIEW-ORD-HV-551"
+            },
+            "tool": "customer_action_preview"
+          }
+        ],
+        "rule_id": "CUST-RULE-HIGH-VALUE-ADDRESS-001",
+        "rule_predicate": {
+          "all": [
+            {
+              "fact": {
+                "field": "challenge_status",
+                "record_type": "identity_challenge",
+                "selector": {
+                  "record_id": "CHALLENGE-ORD-HV-551"
+                }
+              },
+              "op": "eq",
+              "value": "passed"
+            },
+            {
+              "fact": {
+                "field": "customer_id",
+                "record_type": "address",
+                "selector": {
+                  "record_id": "ADDRESS-NEW-22"
+                }
+              },
+              "op": "eq",
+              "value": "CUST-ELENA-05"
+            },
+            {
+              "fact": {
+                "field": "deliverable",
+                "record_type": "address",
+                "selector": {
+                  "record_id": "ADDRESS-NEW-22"
+                }
+              },
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": {
+                "field": "ownership_linked",
+                "record_type": "address",
+                "selector": {
+                  "record_id": "ADDRESS-NEW-22"
+                }
+              },
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": {
+                "field": "high_value",
+                "record_type": "order",
+                "selector": {
+                  "record_id": "ORDER-HV-551"
+                }
+              },
+              "op": "eq",
+              "value": true
+            },
+            {
+              "fact": {
+                "field": "warehouse_locked",
+                "record_type": "action_preview",
+                "selector": {
+                  "record_id": "PREVIEW-ORD-HV-551"
+                }
+              },
+              "op": "eq",
+              "value": false
+            }
+          ]
+        },
+        "rule_type": "authorization",
+        "schema_version": "customer_world_record_v1",
+        "scope": {
+          "environment": "customer_policy_qa"
+        },
+        "severity": "warning",
+        "source_path": "rules/customer_action_rules.json",
+        "source_record_id": "CUST-RULE-HIGH-VALUE-ADDRESS-001",
+        "source_ref": "rules/customer_action_rules.json#CUST-RULE-HIGH-VALUE-ADDRESS-001",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "A high-value address change requires a passed step-up challenge, a deliverable customer-linked address, and an unlocked warehouse order.",
+        "source_tool_call": "call_01",
+        "source_tool_name": "customer_policy_read",
+        "status": "active",
+        "subjects": [],
+        "summary": "A high-value address change requires a passed step-up challenge, a deliverable customer-linked address, and an unlocked warehouse order.",
+        "version": "2026-08-01"
+      }
+    ],
+    "customer_record_read:{\"record_id\":\"CLAIM-ORD-HV-551\"}": [
+      {
+        "claim_id": "CLAIM-ORD-HV-551",
+        "claim_status": "open",
+        "customer_id": "CUST-ELENA-05",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Support claim CLAIM-ORD-HV-551 for ORD-HV-551.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "support_claim",
+        "record_id": "CLAIM-ORD-HV-551",
+        "record_type": "support_claim",
+        "record_version": 1,
+        "reference_id": "ORD-HV-551",
+        "requested_reason": "address_change",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "customers/profiles_and_claims.json",
+        "source_record_id": "CLAIM-ORD-HV-551",
+        "source_ref": "customers/profiles_and_claims.json#CLAIM-ORD-HV-551",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Support claim CLAIM-ORD-HV-551 for ORD-HV-551.",
+        "source_tool_call": "call_06",
+        "source_tool_name": "customer_record_read",
+        "summary": "Support claim CLAIM-ORD-HV-551 for ORD-HV-551."
+      }
+    ],
+    "customer_workflow_policy_read:{\"record_id\":\"WORKFLOW-POLICY-FULFILLMENT-REVISION\"}": [
+      {
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Warehouse dispatch must reference the shipment revision returned by the committed address update.",
+        "execution_order": "after_prerequisite",
+        "followup_tool": "fulfillment_instruction_dispatch",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "predicate": "workflow_policy",
+        "prerequisite_tool": "shipment_address_update",
+        "record_id": "WORKFLOW-POLICY-FULFILLMENT-REVISION",
+        "record_type": "workflow_policy",
+        "record_version": 1,
+        "required_result_field": "shipment_revision_id",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "policies/workflow_policies.json",
+        "source_record_id": "WORKFLOW-POLICY-FULFILLMENT-REVISION",
+        "source_ref": "policies/workflow_policies.json#WORKFLOW-POLICY-FULFILLMENT-REVISION",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Warehouse dispatch must reference the shipment revision returned by the committed address update.",
+        "source_tool_call": "call_07",
+        "source_tool_name": "customer_workflow_policy_read",
+        "summary": "Warehouse dispatch must reference the shipment revision returned by the committed address update."
+      }
+    ],
+    "identity_challenge_read:{\"record_id\":\"CHALLENGE-ORD-HV-551\"}": [
+      {
+        "challenge_status": "passed",
+        "challenge_type": "high_value_address_change",
+        "customer_id": "CUST-ELENA-05",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Step-up identity challenge for order ORD-HV-551.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "order_id": "ORD-HV-551",
+        "predicate": "identity_challenge",
+        "record_id": "CHALLENGE-ORD-HV-551",
+        "record_type": "identity_challenge",
+        "record_version": 1,
+        "schema_version": "customer_world_record_v1",
+        "source_path": "fulfillment/addresses_and_challenges.json",
+        "source_record_id": "CHALLENGE-ORD-HV-551",
+        "source_ref": "fulfillment/addresses_and_challenges.json#CHALLENGE-ORD-HV-551",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Step-up identity challenge for order ORD-HV-551.",
+        "source_tool_call": "call_04",
+        "source_tool_name": "identity_challenge_read",
+        "summary": "Step-up identity challenge for order ORD-HV-551."
+      }
+    ],
+    "order_record_read:{\"record_id\":\"ORDER-HV-551\"}": [
+      {
+        "claim_channel": "retail",
+        "currency": "USD",
+        "customer_id": "CUST-ELENA-05",
+        "effective_period": {
+          "end": null,
+          "start": "2026-01-01T00:00:00Z"
+        },
+        "evidence_span": "Order ORD-HV-551 for laptop.",
+        "fresh_until": "2026-08-08T09:00:00Z",
+        "fulfillment_status": "held_for_address_verification",
+        "high_value": true,
+        "item_type": "laptop",
+        "materialization_source": "world_query",
+        "observed_at": "2026-08-01T09:00:00Z",
+        "order_amount": 1899.0,
+        "order_id": "ORD-HV-551",
+        "predicate": "order",
+        "record_id": "ORDER-HV-551",
+        "record_type": "order",
+        "record_version": 1,
+        "retail_return_window_status": "current",
+        "schema_version": "customer_world_record_v1",
+        "source_path": "orders/orders_and_inspections.json",
+        "source_record_id": "ORDER-HV-551",
+        "source_ref": "orders/orders_and_inspections.json#ORDER-HV-551",
+        "source_refs": [
+          "SAB-SYNTHETIC-CUSTOMER-WORLD-v1"
+        ],
+        "source_span": "Order ORD-HV-551 for laptop.",
+        "source_tool_call": "call_02",
+        "source_tool_name": "order_record_read",
+        "summary": "Order ORD-HV-551 for laptop.",
+        "warehouse_id": "WH-SJC-02",
+        "warranty_status": "active"
+      }
+    ]
+  },
+  "information_calls": [
+    {
+      "arguments": {
+        "record_id": "CUST-RULE-HIGH-VALUE-ADDRESS-001"
+      },
+      "tool": "customer_policy_read"
+    },
+    {
+      "arguments": {
+        "record_id": "ORDER-HV-551"
+      },
+      "tool": "order_record_read"
+    },
+    {
+      "arguments": {
+        "record_id": "ADDRESS-NEW-22"
+      },
+      "tool": "address_record_read"
+    },
+    {
+      "arguments": {
+        "record_id": "CHALLENGE-ORD-HV-551"
+      },
+      "tool": "identity_challenge_read"
+    },
+    {
+      "arguments": {
+        "record_id": "PREVIEW-ORD-HV-551"
+      },
+      "tool": "customer_action_preview"
+    },
+    {
+      "arguments": {
+        "record_id": "CLAIM-ORD-HV-551"
+      },
+      "tool": "customer_record_read"
+    },
+    {
+      "arguments": {
+        "record_id": "WORKFLOW-POLICY-FULFILLMENT-REVISION"
+      },
+      "tool": "customer_workflow_policy_read"
+    }
+  ],
+  "online_extractor_calls": 0,
+  "protocol": "v2",
+  "rule_execution_trace": [
+    {
+      "failure_predicate_result": "UNKNOWN",
+      "management_effect": "permit_action",
+      "predicate_result": "TRUE",
+      "reason": "SUPPORTED",
+      "rule_id": "CUST-RULE-HIGH-VALUE-ADDRESS-001",
+      "safe_predicate_result": "UNKNOWN",
+      "status": "SUPPORTED"
+    }
+  ],
+  "schema_version": 1,
+  "world_overlays": [
+    {
+      "field": "challenge_status",
+      "record_id": "CHALLENGE-ORD-HV-551",
+      "value": "passed"
+    }
+  ],
+  "world_snapshot_version": "2026-08-02-customer-v13"
+}

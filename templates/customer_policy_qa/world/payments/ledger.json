@@ -1,0 +1,101 @@
+{
+  "description": "Payment ledger and refund eligibility snapshots.",
+  "records": [
+    {
+      "called_as": "payment_read --customer-id CUS-4491",
+      "data": {
+        "charges": [
+          {
+            "amount": "119.00",
+            "card_last4": "4421",
+            "charge_id": "ch_90A1",
+            "created_at": "2026-06-10T17:41:22Z",
+            "currency": "USD",
+            "duplicate_group_id": "dup-SB-884219-20260610",
+            "duplicate_role": "original",
+            "order_id": "SB-884219",
+            "status": "settled"
+          },
+          {
+            "amount": "119.00",
+            "card_last4": "4421",
+            "charge_id": "ch_90A2",
+            "created_at": "2026-06-10T17:42:03Z",
+            "currency": "USD",
+            "duplicate_group_id": "dup-SB-884219-20260610",
+            "duplicate_role": "duplicate",
+            "order_id": "SB-884219",
+            "status": "settled"
+          }
+        ],
+        "customer_id": "CUS-4491"
+      },
+      "match": {
+        "customer_id": "CUS-4491"
+      },
+      "record_id": "cpq-payment-CUS-4491",
+      "summary": "CUS-4491 has two settled 119.00 card charges for the same order; ch_90A2 is flagged as the duplicate.",
+      "tool_name": "payment_read"
+    },
+    {
+      "called_as": "refund_preview --charge-id ch_90A2 --amount 119.00",
+      "data": {
+        "amount": "119.00",
+        "charge_id": "ch_90A2",
+        "currency": "USD",
+        "destination": {
+          "card_brand": "Visa",
+          "card_last4": "4421",
+          "type": "original_payment_method"
+        },
+        "eligible": true,
+        "estimated_settlement_days": 5
+      },
+      "match": {
+        "amount": "119.00",
+        "charge_id": "ch_90A2"
+      },
+      "record_id": "cpq-refund-preview-ch_90A2",
+      "summary": "Refund preview for ch_90A2 is eligible for 119.00 back to Visa ending 4421.",
+      "tool_name": "refund_preview"
+    },
+    {
+      "called_as": "payment_read --customer-id CUS-9988",
+      "data": {
+        "charges": [
+          {
+            "amount": "64.50",
+            "charge_id": "ch_77B1",
+            "duplicate_role": "none",
+            "status": "settled"
+          }
+        ],
+        "customer_id": "CUS-9988"
+      },
+      "match": {
+        "customer_id": "CUS-9988"
+      },
+      "record_id": "cpq-payment-CUS-9988-noise",
+      "summary": "Unrelated customer payment history with a single settled charge.",
+      "tool_name": "payment_read"
+    },
+    {
+      "called_as": "network_dispute_read --charge-id CH-992-B",
+      "data": {"charge_id": "CH-992-B", "dispute_id": "ND-992", "payout_amount": 389, "status": "paid_to_cardholder"},
+      "match": {"charge_id": "CH-992-B", "order_id": "ORD-992"},
+      "record_id": "cpq-network-dispute-ND-992",
+      "summary": "Network dispute ND-992 paid 389 USD to the cardholder on 2026-07-22.",
+      "tool_name": "network_dispute_read"
+    },
+    {
+      "called_as": "compensation_history_read --order-id ORD-992",
+      "data": {"existing_remedy": "chargeback_payout", "order_id": "ORD-992"},
+      "match": {"order_id": "ORD-992"},
+      "record_id": "cpq-compensation-history-ORD-992",
+      "summary": "The chargeback payout is already recorded as the financial remedy for ORD-992.",
+      "tool_name": "compensation_history_read"
+    }
+  ],
+  "schema_version": 1,
+  "source_type": "system_table"
+}

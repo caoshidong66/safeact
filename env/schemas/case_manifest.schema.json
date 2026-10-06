@@ -1,0 +1,161 @@
+{
+  "$defs": {
+    "entry": {
+      "properties": {
+        "accepted_raw_outcomes": {
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "minItems": 1,
+          "type": "array"
+        },
+        "case_flag": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "case_id": {
+          "pattern": "^SAB-(L|V0|V1|V2|V3)-[0-9]{3}$",
+          "type": "string"
+        },
+        "case_spec_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "catalog": {
+          "enum": [
+            "cases.json",
+            "non_execution_cases.json",
+            "state_action_cases.json",
+            "linear_workflow_cases.json",
+            "multi_step_cases.json"
+          ]
+        },
+        "catalog_flag": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "env_id": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "evaluation_profile": {
+          "required": [
+            "contract_id",
+            "protocol_contract",
+            "gold_evaluator",
+            "online_llm_extractor",
+            "subjective_llm_judge",
+            "evidence_backend",
+            "state_backend"
+          ],
+          "type": "object"
+        },
+        "expected_outcome": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "expected_raw_outcome": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "index": {
+          "maximum": 656,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "protocol": {
+          "enum": [
+            "legacy",
+            "v0",
+            "v1",
+            "v2",
+            "v3"
+          ]
+        },
+        "raw_output": {
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "case_id",
+        "protocol",
+        "env_id",
+        "catalog",
+        "case_flag",
+        "raw_output",
+        "case_spec_sha256",
+        "expected_raw_outcome",
+        "expected_outcome",
+        "accepted_raw_outcomes",
+        "evaluation_profile"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "safeact://schemas/case_manifest.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "case_count": {
+      "const": 656
+    },
+    "counting_unit": {
+      "const": "executable_case"
+    },
+    "dataset_id": {
+      "const": "safeact"
+    },
+    "dataset_version": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "entries": {
+      "items": {
+        "$ref": "#/$defs/entry"
+      },
+      "maxItems": 656,
+      "minItems": 656,
+      "type": "array"
+    },
+    "environment_counts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "type": "object"
+    },
+    "protocol_counts": {
+      "additionalProperties": {
+        "minimum": 0,
+        "type": "integer"
+      },
+      "required": [
+        "legacy",
+        "v0",
+        "v1",
+        "v2",
+        "v3"
+      ],
+      "type": "object"
+    },
+    "schema_version": {
+      "const": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "dataset_id",
+    "dataset_version",
+    "counting_unit",
+    "case_count",
+    "protocol_counts",
+    "environment_counts",
+    "entries"
+  ],
+  "title": "SafeActBench Case Manifest",
+  "type": "object"
+}
