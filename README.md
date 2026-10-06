@@ -11,7 +11,7 @@
 <p>
   <a href="https://daniellin97.github.io/">Hongzhan Lin</a><sup>1*†</sup>&nbsp;&nbsp;
   <a href="https://shidongcao.com/">Shidong Cao</a><sup>2*</sup>&nbsp;&nbsp;
-  <a href="https://chiyeunglaw.github.io/">Ziyang Luo</a><sup>3†‡</sup>&nbsp;&nbsp;
+  <a href="https://chiyeunglaw.github.io/">Ziyang Luo</a><sup>3†</sup>&nbsp;&nbsp;
   <a href="https://wenhaochai.com/">Wenhao Chai</a><sup>4</sup>&nbsp;&nbsp;
   <a href="https://www.comp.nus.edu.sg/cs/people/leeml/">Mong-Li Lee</a><sup>1</sup>&nbsp;&nbsp;
   <a href="https://www.comp.nus.edu.sg/cs/people/whsu/">Wynne Hsu</a><sup>1</sup>
@@ -24,7 +24,7 @@
   <sup>4</sup>Princeton University
 </p>
 
-<sub><sup>*</sup>Equal contribution&nbsp;&nbsp;·&nbsp;&nbsp;<sup>†</sup>Corresponding authors&nbsp;&nbsp;·&nbsp;&nbsp;<sup>‡</sup>Work done prior to joining Amazon</sub>
+<sub><sup>*</sup>Equal contribution&nbsp;&nbsp;·&nbsp;&nbsp;<sup>†</sup>Corresponding authors</sub>
 
 <br><br>
 
