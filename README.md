@@ -30,6 +30,7 @@
 
 <a href="https://safeact.github.io"><img src="https://img.shields.io/badge/Project-Page-1F6FEB?style=flat-square&logo=googlechrome&logoColor=white" alt="Project Page"></a>
 <a href="https://arxiv.org/abs/2610.07753"><img src="https://img.shields.io/badge/arXiv-2610.07753-B31B1B?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a>
+<a href="https://huggingface.co/papers/2610.07753"><img src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Daily%20Paper-FFD21E?style=flat-square" alt="Hugging Face Daily Paper"></a>
 <a href="data/safeact/cases.json"><img src="https://img.shields.io/badge/Cases-656-7A5DA5?style=flat-square" alt="656 cases"></a>
 <a href="#-benchmark"><img src="https://img.shields.io/badge/Domains-6-168078?style=flat-square" alt="6 domains"></a>
 <a href="#-benchmark"><img src="https://img.shields.io/badge/Protocols-5-3467AA?style=flat-square" alt="5 protocols"></a>
@@ -57,6 +58,7 @@
 
 ## 📰 News
 
+- **[2026-10]** 🤗 SafeAct is on [Hugging Face Daily Papers](https://huggingface.co/papers/2610.07753). Upvotes and discussion are welcome!
 - **[2026-10]** 📄 The paper is out on [arXiv](https://arxiv.org/abs/2610.07753)! See also the [project page](https://safeact.github.io).
 - **[2026-10]** 🚀 Benchmark data, environments, and the evaluation harness are released in this repository.
 
