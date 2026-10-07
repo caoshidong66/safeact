@@ -29,9 +29,7 @@
 <br><br>
 
 <a href="https://safeact.github.io"><img src="https://img.shields.io/badge/Project-Page-1F6FEB?style=flat-square&logo=googlechrome&logoColor=white" alt="Project Page"></a>
-<!-- TODO: replace XXXX.XXXXX with the arXiv ID once the paper is announced, then delete the "coming soon" badge below. -->
-<!-- <a href="https://arxiv.org/abs/XXXX.XXXXX"><img src="https://img.shields.io/badge/arXiv-XXXX.XXXXX-B31B1B?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a> -->
-<img src="https://img.shields.io/badge/arXiv-coming%20soon-B31B1B?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv (coming soon)">
+<a href="https://arxiv.org/abs/2610.07753"><img src="https://img.shields.io/badge/arXiv-2610.07753-B31B1B?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a>
 <a href="data/safeact/cases.json"><img src="https://img.shields.io/badge/Cases-656-7A5DA5?style=flat-square" alt="656 cases"></a>
 <a href="#-benchmark"><img src="https://img.shields.io/badge/Domains-6-168078?style=flat-square" alt="6 domains"></a>
 <a href="#-benchmark"><img src="https://img.shields.io/badge/Protocols-5-3467AA?style=flat-square" alt="5 protocols"></a>
@@ -59,7 +57,7 @@
 
 ## 📰 News
 
-- **[2026-10]** 📄 The paper is released as a preprint. See the [project page](https://safeact.github.io); the arXiv link is coming soon.
+- **[2026-10]** 📄 The paper is out on [arXiv](https://arxiv.org/abs/2610.07753)! See also the [project page](https://safeact.github.io).
 - **[2026-10]** 🚀 Benchmark data, environments, and the evaluation harness are released in this repository.
 
 ## 🔍 Overview
@@ -230,14 +228,14 @@ safeact/
 If you use SafeAct in your research, please cite:
 
 ```bibtex
-@misc{lin2026safeactbench,
+@misc{lin2026evidence,
   title         = {From Evidence to Action: How Tool-Using Agents Fail},
   author        = {Lin, Hongzhan and Cao, Shidong and Luo, Ziyang and Chai, Wenhao and Lee, Mong-Li and Hsu, Wynne},
   year          = {2026},
-  eprint        = {XXXX.XXXXX},
+  eprint        = {2610.07753},
   archivePrefix = {arXiv},
   primaryClass  = {cs.CL},
-  url           = {https://safeact.github.io}
+  url           = {https://arxiv.org/abs/2610.07753}
 }
 ```
 
