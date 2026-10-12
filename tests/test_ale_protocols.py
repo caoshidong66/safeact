@@ -66,7 +66,16 @@ def messages_from_trace(trace):
     return messages
 
 
-@pytest.mark.parametrize("case_id", all_case_ids())
+def selected_case_ids():
+    """Partition reference cases only when CI explicitly requests a shard."""
+    count = int(os.environ.get("SAFEACT_CASE_SHARD_COUNT", "1"))
+    index = int(os.environ.get("SAFEACT_CASE_SHARD_INDEX", "0"))
+    if count < 1 or not 0 <= index < count:
+        raise ValueError("Invalid SafeAct reference shard")
+    return all_case_ids()[index::count]
+
+
+@pytest.mark.parametrize("case_id", selected_case_ids())
 def test_every_released_execution_reference_roundtrips(case_id):
     trace = reference(case_id)
     before = copy.deepcopy(trace)
