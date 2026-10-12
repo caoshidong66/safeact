@@ -1,0 +1,43 @@
+name: ALE V0-V3 integration
+
+on:
+  pull_request:
+    paths: ['integrations/ale/**', 'tests/test_ale*.py', '.github/workflows/ale-protocols.yml']
+  push:
+    branches: [safeact-ale-trajectory-pilot]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protocols:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checkout the validated ALE schema revision
+        uses: actions/checkout@v4
+        with:
+          repository: rdi-berkeley/agents-last-exam
+          ref: d9abc0734b56ea34116c5bfcbdd0b808269ab9e2
+          path: work/ale-schema
+      - run: python -m pip install pytest ruff requests 'pydantic>=2,<3'
+      - name: Lint
+        run: |
+          python -m ruff check integrations/ale tests/test_ale*.py
+          python -m ruff format --check integrations/ale tests/test_ale*.py
+      - name: All released V0-V3 references and protocol regressions
+        env:
+          PYTHONPATH: ${{ github.workspace }}/work/ale-schema
+          SAFEACT_REQUIRE_ALE_SCHEMA: '1'
+        run: python -m pytest tests/test_ale_adapter.py tests/test_ale_protocols.py -q --junitxml=work/ale-tests.xml
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ale-protocol-validation
+          path: work/ale-tests.xml
