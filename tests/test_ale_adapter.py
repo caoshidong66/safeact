@@ -11,7 +11,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from integrations.ale.adapter import TraceError, evaluate, fingerprint, strict_json
 from integrations.ale.export import export_messages
-from integrations.ale.pilot import PILOT_CASES, reference_trajectory
+from integrations.ale.pilot import V2_PILOT_CASES, reference_trajectory
 from integrations.ale.runtime import case_row, runtime
 
 
@@ -20,7 +20,7 @@ def trace():
     return reference_trajectory("SAB-V2-003")[0]
 
 
-@pytest.mark.parametrize("case_id", PILOT_CASES)
+@pytest.mark.parametrize("case_id", V2_PILOT_CASES)
 def test_original_references_pass_and_input_is_unchanged(case_id):
     original, _public = reference_trajectory(case_id)
     before = copy.deepcopy(original)
@@ -178,8 +178,8 @@ def test_empty_trace_is_a_scored_failure(trace):
 
 
 def test_unregistered_protocol_is_not_scored():
-    with pytest.raises(ValueError, match="V2 only"):
-        case_row("SAB-V3-001")
+    with pytest.raises(ValueError, match="Only V0"):
+        case_row("SAB-L-001")
 
 
 @pytest.mark.parametrize("raw", ['{"x": 1, "x": 2}', '{"x": NaN}', '{"x": Infinity}'])
