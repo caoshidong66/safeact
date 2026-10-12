@@ -9,7 +9,7 @@ import math
 import re
 from pathlib import Path
 
-from .runtime import case_row, runtime
+from .runtime import PlatformUnavailable, case_row, runtime
 
 SUPPORTED_TOOLS = frozenset({"information_call", "execute_action", "list_tools"})
 TOKEN = re.compile(r"^r_[0-9a-f]{32}$")
@@ -78,6 +78,8 @@ def check_shape(trace, row):
         raise TraceError("Missing or mismatched extra.safeact_case_id")
     if extra.get("safeact_case_spec_sha256") != fingerprint(row["case_spec"]):
         raise TraceError("Missing or mismatched case specification digest")
+    if extra.get("safeact_protocol", row["protocol"]) != row["protocol"]:
+        raise TraceError("Mismatched SafeAct protocol")
     steps = trace.get("steps")
     if not isinstance(steps, list):
         raise TraceError("steps must be a list")
@@ -154,6 +156,22 @@ def replay(trace, row, gateway, turn, live):
     bindings = {}
     observed_calls = 0
     for step in steps:
+        message = step.get("message")
+        if step["source"] == "agent" and isinstance(message, str):
+            try:
+                final = strict_json(message)
+            except ValueError:
+                final = None
+            if isinstance(final, dict) and "terminal" in final:
+                if row["protocol"] != "v0" or pending or step.get("tool_calls"):
+                    raise TraceError(
+                        "NO_ACTION terminal requires V0 and observed prior results"
+                    )
+                terminal = final["terminal"]
+                if not isinstance(terminal, dict):
+                    raise TraceError("NO_ACTION terminal must be an object")
+                turn[0] = step["step_id"]
+                gateway.stop(terminal)
         names = [call.get("name") for call in step.get("tool_calls", [])]
         if names.count("execute_action") > 1 or (
             "execute_action" in names and "information_call" in names
@@ -254,6 +272,7 @@ def evaluate(trace, case_id):
     report = {
         "schema_version": "safeact-ale-sidecar-v1",
         "case_id": case_id,
+        "protocol": row["protocol"],
         "case_spec_sha256": fingerprint(row["case_spec"]),
         "trajectory_sha256": fingerprint(trace),
         "endpoint_score": endpoint,
@@ -262,22 +281,22 @@ def evaluate(trace, case_id):
         "diagnostics": [],
     }
     turn = [0]
-    with runtime(row, turn, seed=b"safeact-ale-offline-replay-v1") as (
-        gateway,
-        _run,
-        live,
-    ):
-        try:
+    try:
+        with runtime(row, turn, seed=b"safeact-ale-offline-replay-v1") as (
+            gateway,
+            _run,
+            live,
+        ):
             result, count = replay(trace, row, gateway, turn, live)
-        except TraceError as exc:
-            report["diagnostics"].append(str(exc))
-            return report
-        report.update(
-            status="scored",
-            evidence_score=float(result["success"]),
-            observed_tool_calls=count,
-            native_result=result,
-        )
+    except (TraceError, PlatformUnavailable) as exc:
+        report["diagnostics"].append(str(exc))
+        return report
+    report.update(
+        status="scored",
+        evidence_score=float(result["success"]),
+        observed_tool_calls=count,
+        native_result=result,
+    )
     return report
 
 

@@ -7,12 +7,24 @@ import json
 from pathlib import Path
 
 from .adapter import evaluate, fingerprint
-from .runtime import case_row, runtime
+from .runtime import ROOT, SUPPORTED_PROTOCOLS, PlatformUnavailable, case_row, runtime
 
-PILOT_CASES = ("SAB-V2-001", "SAB-V2-003", "SAB-V2-005", "SAB-V2-007", "SAB-V2-009")
+V2_PILOT_CASES = ("SAB-V2-001", "SAB-V2-003", "SAB-V2-005", "SAB-V2-007", "SAB-V2-009")
+PILOT_CASES = tuple(
+    f"SAB-V{protocol}-{index:03d}" for protocol in range(4) for index in (1, 3, 5, 7, 9)
+)
 
 
-def reference_trajectory(case_id):
+def all_case_ids():
+    dataset = json.loads((ROOT / "data/safeact/cases.json").read_text(encoding="utf-8"))
+    return tuple(
+        row["case_id"]
+        for row in dataset["cases"]
+        if row["protocol"] in SUPPORTED_PROTOCOLS
+    )
+
+
+def reference_trajectory(case_id, *, action_order=None):
     row = case_row(case_id)
     turn = [0]
     steps = []
@@ -21,9 +33,26 @@ def reference_trajectory(case_id):
         run,
         live,
     ):
-        record = run.build_simulated_multi_step_execution(
-            {"env_id": row["env_id"]}, row["case_spec"]
-        )
+        builder = {
+            "v0": run.build_simulated_no_action_execution,
+            "v1": run.build_simulated_state_action_execution,
+            "v2": run.build_simulated_multi_step_execution,
+            "v3": run.build_simulated_multi_step_execution,
+        }[row["protocol"]]
+        record = builder({"env_id": row["env_id"]}, row["case_spec"])
+        if action_order is not None:
+            actions = [
+                event
+                for event in record["events"]
+                if event["type"] == "CONSEQUENTIAL_CALL"
+            ]
+            if sorted(action_order) != list(range(len(actions))):
+                raise ValueError("action_order must permute all consequential calls")
+            reordered = iter(actions[index] for index in action_order)
+            record["events"] = [
+                next(reordered) if event["type"] == "CONSEQUENTIAL_CALL" else event
+                for event in record["events"]
+            ]
         values = {}
         for event in record["events"]:
             call_step = len(steps) + 1
@@ -76,10 +105,24 @@ def reference_trajectory(case_id):
                     },
                 }
             )
+        if row["protocol"] == "v0":
+            turn[0] = len(steps) + 1
+            terminal = record["terminal"]
+            gateway.stop(terminal)
+            steps.append(
+                {
+                    "step_id": turn[0],
+                    "source": "agent",
+                    "message": json.dumps({"terminal": terminal}),
+                }
+            )
         native = gateway.score()
         if not native["success"]:
             raise RuntimeError(f"Original reference failed: {case_id}: {native}")
-        public, _patches = live.public_scenario(gateway.base.scenario)
+        if row["protocol"] in {"v2", "v3"}:
+            public, _patches = live.public_scenario(gateway.base.scenario)
+        else:
+            public = gateway.base.scenario
     trace = {
         "schema_version": "ALE-v1.0",
         "episode_id": f"reference-{case_id}",
@@ -91,6 +134,7 @@ def reference_trajectory(case_id):
         "final_metrics": {"reward": None, "status": "completed"},
         "extra": {
             "safeact_case_id": case_id,
+            "safeact_protocol": row["protocol"],
             "safeact_case_spec_sha256": fingerprint(row["case_spec"]),
             "fixture_only": True,
         },
@@ -101,11 +145,26 @@ def reference_trajectory(case_id):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output-dir", type=Path, required=True)
+    parser.add_argument(
+        "--all-cases", action="store_true", help="Validate every released V0–V3 case"
+    )
+    parser.add_argument(
+        "--allow-unavailable-platform",
+        action="store_true",
+        help="Record platform failures; default is fail closed",
+    )
     args = parser.parse_args()
     args.output_dir.mkdir(parents=True, exist_ok=True)
     reports = []
-    for case_id in PILOT_CASES:
-        trace, public = reference_trajectory(case_id)
+    unavailable = []
+    for case_id in all_case_ids() if args.all_cases else PILOT_CASES:
+        try:
+            trace, public = reference_trajectory(case_id)
+        except PlatformUnavailable as exc:
+            if not args.allow_unavailable_platform:
+                raise
+            unavailable.append({"case_id": case_id, "diagnostic": str(exc)})
+            continue
         report = evaluate(trace, case_id)
         if report["evidence_score"] != 1.0:
             raise RuntimeError(f"Reference adapter failed: {case_id}")
@@ -130,6 +189,7 @@ def main():
         "model_runs": 0,
         "ale_vm_runs": 0,
         "reference_cases": len(reports),
+        "unavailable_cases": unavailable,
         "reports": reports,
     }
     (args.output_dir / "summary.json").write_text(

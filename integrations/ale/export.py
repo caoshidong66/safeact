@@ -64,6 +64,7 @@ def export_messages(messages, row, *, agent_name, model=None, episode_id=None):
         "final_metrics": {"reward": None, "status": "completed"},
         "extra": {
             "safeact_case_id": row["case_id"],
+            "safeact_protocol": row["protocol"],
             "safeact_case_spec_sha256": fingerprint(row["case_spec"]),
             "exported_from_safeact": True,
             "ale_vm_run": False,
