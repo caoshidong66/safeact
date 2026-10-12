@@ -120,6 +120,9 @@ V0–V3 reference through export/replay/native ALE schema validation, and covers
 wrong V0 stops, uninvestigated refusals, V1 missing/extra/early actions, and V3
 alternate valid orders and invalid dependencies. ALE's schema checkout is pinned
 to `d9abc0734b56ea34116c5bfcbdd0b808269ab9e2`. No model credentials are used.
+The 570 references are partitioned into eight disjoint CI groups; protocol
+regressions run separately. Local tests cover all cases unless explicit
+`SAFEACT_CASE_SHARD_COUNT` and `SAFEACT_CASE_SHARD_INDEX` variables are set.
 
 Before proposing a benchmark task, run a real sandbox/model pilot and have
 domain experts validate the workflow and alternative evidence paths. These
